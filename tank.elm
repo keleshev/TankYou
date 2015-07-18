@@ -11,15 +11,17 @@ type alias Tank = {
   velocity: Vector,
   angular: Angular,
   radius: Float,
-  mass: Float
+  mass: Float,
+  inertia: Float
 }
 
 default = {
   position=Vector.zero,
   velocity=Vector.zero,
   angular={ position=0, velocity=0 },
-  radius=50,
-  mass=1 }
+  radius=35,
+  mass=1,
+  inertia=4000 }
 
 {-
 τ = 1
@@ -29,7 +31,7 @@ V = V + A * T
 P = P + V * T
 
 
-acceleration_ = force_ / mass
+st.foldr (+.) Vector.zeroacceleration_ = force_ / mass
 velocity_ = velocity_ + acceleration_ * t
 position_ = position_ + velocity_ * t
 
