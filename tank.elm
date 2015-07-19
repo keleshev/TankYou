@@ -19,7 +19,7 @@ default = {
   position=Vector.zero,
   velocity=Vector.zero,
   angular={ position=0, velocity=0 },
-  radius=35,
+  radius=30,
   mass=1,
   inertia=4000 }
 

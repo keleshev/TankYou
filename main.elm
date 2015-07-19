@@ -14,12 +14,13 @@ import View
 update : (Float, Controls) -> Tank -> Tank
 update (dt, controls) tank =
   let _ = controls |> Debug.watch "controls" in
-  let forces = inferForces tank controls |> Debug.watch "forces" in
+  let forces = inferForces tank controls in
   let force = sumForces forces in
   let torque = inferTorque forces in
-  let torque' = torque - 1000 * tank.angular.velocity in
+  let torque' = torque -  1000 * tank.angular.velocity in
+  let torque'' = torque'  - 1000 * tank.angular.velocity ^ 2 in
   let tank' = applyForce tank force dt in
-  let tank'' = applyTorque tank' torque' dt in
+  let tank'' = applyTorque tank' torque'' dt in
   tank'' |> Debug.watch "tank"
 
 
@@ -39,7 +40,7 @@ inferTorque appliedForces =
   appliedForces |> List.map appliedForceToTorque |> List.sum
 
 
-throttleToForce throttle = (toFloat throttle) * 1
+throttleToForce throttle = (toFloat throttle) * 1.0
 
 
 inferForces : Tank -> Controls -> List AppliedForce

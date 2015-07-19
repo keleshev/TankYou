@@ -23,8 +23,9 @@ toControls {left, right} keyCodeSet =
   { tracks={ left=(is left.up - is left.down),
              right=(is right.up - is right.down) } }
 
+wesd = { left={ up=87, down=83 }, right={ up=69, down=68 } }
+iokl = { left={ up=73, down=75 }, right={ up=79, down=76 } }
 
 all : Signal Controls
 all =
-  dropMap (toControls { left={ up=87, down=83 },
-                       right={ up=69, down=68 } }) Keyboard.keysDown
+  dropMap (toControls wesd) Keyboard.keysDown

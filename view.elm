@@ -27,7 +27,7 @@ renderTank tank =
   group [ --square tank.radius |> grey,
           track |> move (radius, 0),
           track |> move (-radius, 0),
-          rect 6 diameter |> black |> move (0, diameter * 0.5),
+          rect 8 diameter |> black |> move (0, diameter * 0.5),
           circle radius |> black ]
     |> move (tank.position.x, tank.position.y)
     |> rotate tank.angular.position
