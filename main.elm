@@ -25,19 +25,21 @@ update (dt, controls) tank =
 
 
 type alias Force = Vector
-type alias AppliedForce = { force: Force, position: Vector }
+type alias AppliedForce = { force: Force, point: Vector }
 
 
 sign x = if x > 0 then 1 else if x < 0 then -1 else 0
 
 
 appliedForceToTorque : AppliedForce -> Float
-appliedForceToTorque {force, position} =
-  (sign position.x) * Vector.magnitude force * Vector.magnitude position
+appliedForceToTorque {force, point} =
+  (sign point.x) * Vector.magnitude force * Vector.magnitude point
 
 inferTorque : List AppliedForce -> Float
 inferTorque appliedForces =
   appliedForces |> List.map appliedForceToTorque |> List.sum
+
+
 
 
 throttleToForce throttle = (toFloat throttle) * 1.0
@@ -47,11 +49,13 @@ inferForces : Tank -> Controls -> List AppliedForce
 inferForces tank {tracks} =
   let angle = tank.angular.position in
   [ { force=Vector.rotate { x=0, y=throttleToForce tracks.left } angle ,
-      position={ x=(-2 * tank.radius * sign tracks.left), y=0 } },
+      point={ x=(-2 * tank.radius * sign tracks.left), y=0 } },
+      --point=Vector.rotate { x=(-2 * tank.radius), y=0 } angle },
     { force=Vector.rotate { x=0, y=throttleToForce tracks.right } angle ,
-      position={ x=(2 * tank.radius * sign tracks.right), y=0 }},
-    { force=dragForce tank.velocity, position=Vector.zero },
-    { force=frictionForce tank.velocity, position=Vector.zero }
+      point={ x=(2 * tank.radius * sign tracks.right), y=0 }},
+      --point=Vector.rotate { x=(2 * tank.radius), y=0 } angle },
+    { force=dragForce tank.velocity, point=Vector.zero },
+    { force=frictionForce tank.velocity, point=Vector.zero }
   ]
 
 
@@ -76,6 +80,10 @@ applyForce : Tank -> Force -> Float -> Tank
 applyForce tank force dt =
   let acceleration = force /. tank.mass in
   let velocity = tank.velocity +. dt *. acceleration in
+  --let old_momentum = tank.mass *. tank.velocity in
+  --let momentum = old_momentum +. dt *. force in
+  --let velocity = momentum /. tank.mass in
+
   let position = tank.position +. dt *. velocity in
   { tank | velocity <- velocity,
            position <- position }
@@ -83,7 +91,7 @@ applyForce tank force dt =
 
 applyTorque : Tank -> Float -> Float -> Tank
 applyTorque ({angular} as tank) torque dt =
-  let angular_acceleration = torque / tank.inertia in
+  let angular_acceleration = torque / (Tank.inertia tank) in
   let angular_velocity = angular.velocity + dt * angular_acceleration in
   let angular_position = angular.position + dt * angular_velocity in
   { tank | angular <- { angular | position <- angular_position,

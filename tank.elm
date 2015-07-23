@@ -11,17 +11,19 @@ type alias Tank = {
   velocity: Vector,
   angular: Angular,
   radius: Float,
-  mass: Float,
-  inertia: Float
+  mass: Float
 }
+
+inertia object = 1 / 6 * (object.radius * 2) ^ 2 * object.mass
 
 default = {
   position=Vector.zero,
   velocity=Vector.zero,
   angular={ position=0, velocity=0 },
   radius=30,
-  mass=1,
-  inertia=4000 }
+  mass=1 }
+  --1/6 x size^2 x mass
+  --1/6 * 60 ^ 2 * 1
 
 {-
 τ = 1
